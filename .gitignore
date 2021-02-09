@@ -66,3 +66,4 @@ typings/
 
 # custom
 dist
+package-lock.json

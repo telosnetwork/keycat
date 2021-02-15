@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from 'react'
+import React, { useCallback, useMemo, useState } from 'react'
 import TransactPayload from './TransactPayload'
 import Submit from 'design/moles/fields/Submit'
 import { getSearchParams, fromBinary, toBinary } from 'utils/utils'
@@ -14,10 +14,20 @@ import TransactMeta from './TransactMeta'
 import JsonViewer from 'design/moles/JsonViewer'
 import { useStore } from 'store/store'
 import { Link } from '@reach/router'
+import styled from 'styled-components'
 
 interface Props {
   path: string
 }
+
+const HasErrorDiv = styled.div`
+  margin-top: 15px;
+  font-size: 13px;
+  a {
+    cursor: pointer;
+    text-decoration: none;
+  }
+`;
 
 const Transact: React.SFC<Props> = ({ path }) => {
   const { account, payload } = getSearchParams()
@@ -26,6 +36,7 @@ const Transact: React.SFC<Props> = ({ path }) => {
       blockchain: { plugin },
     },
   } = useStore()
+  const [hasError, setHasError] = useState(false);
 
   const { mode, title } = useMemo(() => {
     const mode = dashCaseToCamelCase(path.slice(1))
@@ -49,6 +60,7 @@ const Transact: React.SFC<Props> = ({ path }) => {
     const decodedPayload = decodeURIComponent(payload as string)
     const intermediate = atob(decodedPayload)
     const args = fromBinary(intermediate)
+    console.log('args', JSON.parse(args));
     return JSON.parse(args)
   }, [])
 
@@ -83,16 +95,21 @@ const Transact: React.SFC<Props> = ({ path }) => {
     window.close()
   }
 
+  const handleHasError = () => {
+    setHasError(true);
+  };
+
   return (
     <CardLayout title={title}>
       <TransactMeta account={account} />
       <Form method="post" noValidate onSubmit={handleSubmit}>
         <Fields>
           {Payload}
-          <AccountField defaultValue={account as string} hidden />
-          <PasswordField hidden />
+          <AccountField defaultValue={account as string} />
+          <PasswordField hidden={!hasError} />
           <FieldError name="account" />
           <FieldError name="password" />
+          <HasErrorDiv>having Problem? Click here to <a onClick={handleHasError} >re-enter keys</a>.</HasErrorDiv>
         </Fields>
         <Submit />
         <div>

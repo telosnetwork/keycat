@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Link, navigate } from '@reach/router'
 import Submit from 'design/moles/fields/Submit'
 import Create from 'design/moles/fields/Create'
@@ -10,21 +10,38 @@ import FieldError from 'design/moles/fields/FieldError'
 import AccountField from 'design/moles/fields/AccountField'
 import { Form } from 'design/moles/form/Form'
 import { appendSearchParamsToUrl } from 'utils/utils'
+import styled from 'styled-components'
+
+const HasErrorDiv = styled.div`
+  margin-top: 15px;
+  font-size: 13px;
+  a {
+    cursor: pointer;
+    text-decoration: none;
+  }
+`;
 
 const SigninAccount = props => {
   const { signin } = useSignin()
+  const [hasError, setHasError] = useState(false);
 
   const onClickCreateNewAccount = () => {
     navigate(appendSearchParamsToUrl('/create'))
   }
+
+  const handleHasError = () => {
+    setHasError(true);
+  };
+
 
   return (
     <CardLayout title={`Sign-in`}>
       <Form action="post" noValidate onSubmit={signin}>
         <Fields>
           <AccountField />
-          <PasswordField />
+          <PasswordField hidden={!hasError} />
           <FieldError name="password" />
+          <HasErrorDiv>having Problem? Click here to <a onClick={handleHasError} >re-enter keys</a>.</HasErrorDiv>
         </Fields>
         <Submit help="signin" sibling={() => <Link to={appendSearchParamsToUrl('/register')}>Import Account</Link>} />
       </Form>

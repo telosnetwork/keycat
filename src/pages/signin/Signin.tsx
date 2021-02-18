@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import { Link, navigate } from '@reach/router'
 import Submit from 'design/moles/fields/Submit'
 import Create from 'design/moles/fields/Create'
@@ -23,7 +23,7 @@ const HasErrorDiv = styled.div`
 
 const SigninAccount = props => {
   const { signin } = useSignin()
-  const [hasError, setHasError] = useState(false);
+  const [hasError, setHasError] = useState(true);
 
   const onClickCreateNewAccount = () => {
     navigate(appendSearchParamsToUrl('/create'))
@@ -33,13 +33,23 @@ const SigninAccount = props => {
     setHasError(true);
   };
 
+  const onAnimationStart = ({ target, animationName }) => {
+    switch (animationName) {
+      case 'onAutoFillStart':
+        setHasError(false);
+    }
+  };
+
+  useEffect(() => {
+    document.getElementById('password').addEventListener('animationstart', onAnimationStart);
+  }, []);
 
   return (
     <CardLayout title={`Sign-in`}>
       <Form action="post" noValidate onSubmit={signin}>
         <Fields>
           <AccountField />
-          <PasswordField hidden={!hasError} />
+          <PasswordField hidden={!hasError} id="password" />
           <FieldError name="password" />
           <HasErrorDiv>having Problem? Click here to <a onClick={handleHasError} >re-enter keys</a>.</HasErrorDiv>
         </Fields>

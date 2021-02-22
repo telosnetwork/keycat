@@ -10,7 +10,7 @@ import FieldError from 'design/moles/fields/FieldError'
 import AccountField from 'design/moles/fields/AccountField'
 import { Form } from 'design/moles/form/Form'
 import { appendSearchParamsToUrl } from 'utils/utils'
-import styled from 'styled-components'
+import styled from 'styled-components';
 
 const HasErrorDiv = styled.div`
   margin-top: 15px;

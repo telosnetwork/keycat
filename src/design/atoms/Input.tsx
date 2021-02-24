@@ -83,7 +83,7 @@ const InputBorder = styled.div`
   transition: 0.3s border-color ease;
 `
 
-interface Props extends HTMLProps<HTMLInputElement> {}
+interface Props extends HTMLProps<HTMLInputElement> { }
 
 export const Input: React.SFC<Props> = ({ placeholder: label, style, ...props }) => {
   const [focused, setFocused] = useState(false)
